@@ -1,0 +1,156 @@
+{% extends 'admin_base.html' %}
+{% load static %}
+{% block title %}Student Issues{% endblock %}
+
+{% block content %}
+<div class="container py-4">
+
+    <!-- Page Header -->
+    <div class="d-flex flex-column flex-md-row justify-content-between align-items-start align-items-md-center mb-4">
+        <h3 class="fw-bold mb-2 mb-md-0">Student Issues</h3>
+        <p class="text-muted mb-0">{{ issues.count }} Total Issues</p>
+    </div>
+    
+    <!-- Issue Status Summary -->
+    <div class="row g-3 g-md-4 mb-4">
+
+        {% comment %} Total Issues {% endcomment %}
+        <div class="col-6 col-sm-4 col-md-2">
+            <a href="{% url 'admin_issues_list' %}" class="text-decoration-none d-block">
+                <div class="card shadow border-0 text-center p-3 p-md-4 hover-card {% if not active_filter %}border-primary{% endif %}" style="background: #eaf6ec;">
+                    <h6 class="fw-semibold text-dark mb-2">Total</h6>
+                    <p class="text-muted small mb-0">{{ total_issues }}</p>
+                </div>
+            </a>
+        </div>
+
+        {% comment %} Pending {% endcomment %}
+        <div class="col-6 col-sm-4 col-md-2">
+            <a href="{% url 'admin_issues_list' %}?status=Pending" class="text-decoration-none d-block">
+                <div class="card shadow border-0 text-center p-3 p-md-4 hover-card {% if active_filter == 'Pending' %}border-primary{% endif %}" style="background: #fff3cd;">
+                    <h6 class="fw-semibold text-dark mb-2">Pending</h6>
+                    <p class="text-muted small mb-0">{{ pending_count }}</p>
+                </div>
+            </a>
+        </div>
+
+        {% comment %} In Progress {% endcomment %}
+        <div class="col-6 col-sm-4 col-md-2">
+            <a href="{% url 'admin_issues_list' %}?status=In Progress" class="text-decoration-none d-block">
+                <div class="card shadow border-0 text-center p-3 p-md-4 hover-card {% if active_filter == 'In Progress' %}border-primary{% endif %}" style="background: #cce5ff;">
+                    <h6 class="fw-semibold text-dark mb-2">In Progress</h6>
+                    <p class="text-muted small mb-0">{{ in_progress_count }}</p>
+                </div>
+            </a>
+        </div>
+
+        {% comment %} Resolved {% endcomment %}
+        <div class="col-6 col-sm-4 col-md-2">
+            <a href="{% url 'admin_issues_list' %}?status=Resolved" class="text-decoration-none d-block">
+                <div class="card shadow border-0 text-center p-3 p-md-4 hover-card {% if active_filter == 'Resolved' %}border-primary{% endif %}" style="background: #d4edda;">
+                    <h6 class="fw-semibold text-dark mb-2">Resolved</h6>
+                    <p class="text-muted small mb-0">{{ resolved_count }}</p>
+                </div>
+            </a>
+        </div>
+
+        {% comment %} Rejected {% endcomment %}
+        <div class="col-6 col-sm-4 col-md-2">
+            <a href="{% url 'admin_issues_list' %}?status=Rejected" class="text-decoration-none d-block">
+                <div class="card shadow border-0 text-center p-3 p-md-4 hover-card {% if active_filter == 'Rejected' %}border-primary{% endif %}" style="background: #f8d7da;">
+                    <h6 class="fw-semibold text-dark mb-2">Rejected</h6>
+                    <p class="text-muted small mb-0">{{ rejected_count }}</p>
+                </div>
+            </a>
+        </div>
+
+    </div>
+
+    <!-- Search / Filter -->
+    <div class="mb-3">
+        <input type="text" class="form-control" placeholder="Search by student or title..." id="searchInput">
+    </div>
+
+    <!-- Issues Table -->
+    <div class="table-responsive shadow-sm rounded">
+        <table class="table table-hover align-middle mb-0">
+            <thead class="table-light">
+                <tr>
+                    <th>ID</th>
+                    <th>Student</th>
+                    <th>Title</th>
+                    <th>Submitted On</th>
+                    <th>Status</th>
+                    <th>Action</th>
+                </tr>
+            </thead>
+            <tbody id="issuesTable">
+                {% for issue in issues %}
+                <tr>
+                    <td>{{ issue.id }}</td>
+                    <td>{{ issue.student.username }}</td>
+                    <td class="text-truncate" style="max-width: 200px;" title="{{ issue.title }}">{{ issue.title }}</td>
+                    <td>{{ issue.created_at|date:"d M Y, H:i" }}</td>
+                    <td>
+                        {% if issue.status == 'Pending' %}
+                            <span class="badge bg-warning text-dark">Pending</span>
+                        {% elif issue.status == 'In Progress' %}
+                            <span class="badge bg-info text-dark">In Progress</span>
+                        {% elif issue.status == 'Resolved' %}
+                            <span class="badge bg-success">Resolved</span>
+                        {% elif issue.status == 'Rejected' %}
+                            <span class="badge bg-danger">Rejected</span>
+                        {% else %}
+                            <span class="badge bg-secondary">{{ issue.status }}</span>
+                        {% endif %}
+                    </td>
+                    <td>
+                        <a href="{% url 'view_issue_detail' issue.id %}" class="btn btn-sm btn-primary">View</a>
+                    </td>
+                </tr>
+                {% empty %}
+                <tr>
+                    <td colspan="6" class="text-center text-muted">No issues reported yet.</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+
+<!-- Search Script -->
+<script>
+document.getElementById('searchInput').addEventListener('keyup', function() {
+    let filter = this.value.toLowerCase();
+    let rows = document.querySelectorAll('#issuesTable tr');
+    rows.forEach(row => {
+        let student = row.cells[1]?.textContent.toLowerCase();
+        let title = row.cells[2]?.textContent.toLowerCase();
+        row.style.display = (student?.includes(filter) || title?.includes(filter)) ? '' : 'none';
+    });
+});
+</script>
+
+<style>
+.table-hover tbody tr:hover {
+    background-color: #f1f7ff;
+}
+.hover-card {
+    transition: all 0.3s ease;
+    border-radius: 1rem;
+    min-height: 100%;
+}
+.hover-card:hover {
+    transform: translateY(-6px);
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
+}
+.border-primary {
+    border: 2px solid #0d6efd !important;
+}
+.text-truncate {
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+</style>
+{% endblock %}

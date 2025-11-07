@@ -1,0 +1,21 @@
+<h2>All Reported Issues</h2>
+<a href="{% url 'report_issue' %}">Report New Issue</a>
+<ul>
+    {% for issue in issues %}
+        <li>
+            <strong>{{ issue.title }}</strong> ({{ issue.reported_at }})<br>
+            {{ issue.description }}<br>
+            {% if issue.image %}
+                <img src="{{ issue.image.url }}" width="200">
+            {% endif %}
+            {% if issue.video %}
+                <video width="320" height="240" controls>
+                    <source src="{{ issue.video.url }}" type="video/mp4">
+                    Your browser does not support the video tag.
+                </video>
+            {% endif %}
+        </li>
+    {% empty %}
+        <li>No issues reported yet.</li>
+    {% endfor %}
+</ul>

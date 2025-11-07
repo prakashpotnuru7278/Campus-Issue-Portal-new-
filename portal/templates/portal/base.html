@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>{% block title %}Campus Issues Portal{% endblock %}</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+
+    {% load static %}
+    <link rel="stylesheet" href="{% static 'styles.css' %}">
+</head>
+<body class="flex flex-col min-h-screen bg-gray-50 text-gray-900">
+{% if user.is_authenticated %}
+  <p>Welcome, {{ user.username }}! <a href="{% url 'logout' %}">Logout</a></p>
+  <a href="{% url 'report_issue' %}">Report an Issue</a>
+{% else %}
+  <a href="{% url 'login' %}">Login</a> |
+  <a href="{% url 'signup' %}">Sign Up</a>
+{% endif %}
+
+    <!-- Header / Navbar -->
+    <header class="bg-blue-700 text-white shadow">
+        <div class="max-w-6xl mx-auto px-4 py-4 flex justify-between items-center">
+            <h1 class="text-xl font-bold">Campus Issues Portal</h1>
+            <nav>
+                <a href="{% url 'home' %}" class="hover:underline mx-2">Home</a>
+                <a href="{% url 'report_issue' %}" class="hover:underline mx-2">Report</a>
+            </nav>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <main class="flex-grow max-w-6xl mx-auto px-4 py-8">
+        {% block content %}{% endblock %}
+    </main>
+
+    <!-- Footer -->
+    <footer class="bg-gray-800 text-white text-center py-4">
+        <p>&copy; 2025 Campus Portal. All rights reserved.</p>
+    </footer>
+
+</body>
+</html>

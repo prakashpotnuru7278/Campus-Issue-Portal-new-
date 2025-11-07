@@ -1,0 +1,45 @@
+{% extends 'base.html' %}
+
+{% block title %}My Report Status{% endblock %}
+
+{% block content %}
+<div class="container">
+    <h2 class="mb-4">My Report Status</h2>
+    {% if issues %}
+        <div class="table-responsive">
+            <table class="table table-bordered table-striped">
+                <thead class="table-dark">
+                    <tr>
+                        <th>Title</th>
+                        <th>Description</th>
+                        <th>Status</th>
+                        <th>Submitted On</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for issue in issues %}
+                    <tr>
+                        <td>{{ issue.title }}</td>
+                        <td>{{ issue.description|truncatechars:50 }}</td>
+                        <td>
+                            {% if issue.status == "pending" %}
+                                <span class="badge bg-warning text-dark">Pending</span>
+                            {% elif issue.status == "in_progress" %}
+                                <span class="badge bg-info text-dark">In Progress</span>
+                            {% elif issue.status == "resolved" %}
+                                <span class="badge bg-success">Resolved</span>
+                            {% else %}
+                                <span class="badge bg-danger">Rejected</span>
+                            {% endif %}
+                        </td>
+                        <td>{{ issue.created_at|date:"M d, Y H:i" }}</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    {% else %}
+        <p>No issues reported yet.</p>
+    {% endif %}
+</div>
+{% endblock %}

@@ -1,0 +1,49 @@
+{% extends "base.html" %}
+{% load crispy_forms_tags %}
+
+{% block title %}Login - Campus Portal{% endblock %}
+
+{% block content %}
+<div class="min-vh-100 d-flex align-items-center justify-content-center bg-light">
+    <div class="card shadow-lg rounded-4 p-4" style="max-width: 450px; width: 100%;">
+        <div class="card-body">
+            <!-- Heading -->
+            <h2 class="text-center mb-4 fw-bold">Campus Portal Login</h2>
+
+            <!-- Login Form -->
+            <form method="post" novalidate>
+                {% csrf_token %}
+                {{ form|crispy }}
+
+                <div class="d-grid gap-2 mt-3">
+                    <button type="submit" class="btn btn-primary btn-lg fw-semibold">Login</button>
+                </div>
+            </form>
+
+            <!-- Links -->
+            <div class="mt-4 text-center">
+                <p class="mb-1 text-muted">Don't have an account? 
+                    <a href="{% url 'signup' %}" class="text-primary fw-semibold">Sign Up</a>
+                </p>
+                <p class="mb-0 text-muted">
+                    Login as Admin? 
+                    <a href="{% url 'admin_login' %}" class="text-primary fw-semibold">Click Here</a>
+                </p>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+    body {
+        background-color: #f7f9fc;
+    }
+    .card {
+        transition: transform 0.3s, box-shadow 0.3s;
+    }
+    .card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 15px 35px rgba(0,0,0,0.2);
+    }
+</style>
+{% endblock %}

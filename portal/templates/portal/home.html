@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Campus Issues Portal</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background: #f8f9fa;
+            color: #333;
+            text-align: center;
+        }
+
+        header {
+            background-color: #004080;
+            color: white;
+            padding: 2rem 1rem;
+            position: relative;
+        }
+
+        .tagline {
+            font-size: 1.5rem;
+            margin-top: 0.5rem;
+            font-weight: 300;
+        }
+
+        .report-btn {
+            display: inline-block;
+            margin-top: 1rem;
+            padding: 0.7rem 1.5rem;
+            background: #ffcc00;
+            color: #000;
+            text-decoration: none;
+            border-radius: 5px;
+            font-weight: bold;
+        }
+
+        .steps {
+            display: flex;
+            justify-content: center;
+            gap: 2rem;
+            margin: 2rem auto;
+            flex-wrap: wrap;
+        }
+
+        .step {
+            background: white;
+            padding: 1rem;
+            border-radius: 10px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+            max-width: 250px;
+        }
+
+        footer {
+            background-color: #eee;
+            padding: 1rem;
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+        }
+
+        .top-nav {
+            position: absolute;
+            top: 1rem;
+            right: 1rem;
+        }
+
+        .top-nav a, .top-nav span {
+            color: white;
+            margin-left: 1rem;
+            text-decoration: none;
+            font-weight: bold;
+            background-color: rgba(255, 255, 255, 0.1);
+            padding: 0.4rem 0.8rem;
+            border-radius: 5px;
+            font-size: 0.9rem;
+        }
+
+        .top-nav a:hover {
+            background-color: rgba(255, 255, 255, 0.2);
+        }
+    </style>
+</head>
+<body>
+
+    <header>
+        <div class="top-nav">
+            {% if user.is_authenticated %}
+                <span>Welcome, {{ user.username }} 👋</span>
+                <form action="{% url 'logout' %}" method="post" style="display:inline;">
+                    {% csrf_token %}
+                    <button type="submit" class="ml-2 px-3 py-1 bg-red-500 hover:bg-red-600 rounded text-sm text-white">
+                        Logout
+                    </button>
+                </form>
+            {% else %}
+                <a href="{% url 'login' %}">Login</a>
+                <a href="{% url 'signup' %}">Sign Up</a>
+            {% endif %}
+        </div>
+
+        <h1>Campus Issues Portal</h1>
+        <p class="tagline">Spot. Record. Post.</p>
+        <a href="{% url 'report_issue' %}" class="report-btn">Report an Issue</a>
+    </header>
+
+    <section class="steps">
+        <div class="step">
+            <h2>🔍 Spot</h2>
+            <p>Notice something wrong like broken equipment or safety concerns.</p>
+        </div>
+        <div class="step">
+            <h2>📸 Record</h2>
+            <p>Capture images or videos for better clarity.</p>
+        </div>
+        <div class="step">
+            <h2>📄 Post</h2>
+            <p>Submit your report directly to campus authorities.</p>
+        </div>
+    </section>
+
+    <footer>
+        <p>&copy; 2025 Campus Portal. Built for better campuses.</p>
+    </footer>
+
+</body>
+</html>

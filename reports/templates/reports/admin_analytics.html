@@ -1,0 +1,169 @@
+{% extends 'admin_base.html' %}
+{% load static %}
+
+{% block title %}Admin Analytics{% endblock %}
+
+{% block content %}
+<div class="container py-4">
+
+    <h2 class="mb-4">Dashboard Analytics</h2>
+
+    <!-- Summary Cards -->
+    <div class="row g-3 mb-4">
+        <div class="col-md-3 col-sm-6">
+            <div class="card shadow-sm rounded-4 p-3 text-center">
+                <h5>Total Issues</h5>
+                <h3 class="text-primary">{{ total_issues }}</h3>
+            </div>
+        </div>
+        <div class="col-md-3 col-sm-6">
+            <div class="card shadow-sm rounded-4 p-3 text-center">
+                <h5>Pending</h5>
+                <h3 class="text-warning">{{ pending_issues }}</h3>
+            </div>
+        </div>
+        <div class="col-md-3 col-sm-6">
+            <div class="card shadow-sm rounded-4 p-3 text-center">
+                <h5>In Progress</h5>
+                <h3 class="text-info">{{ in_progress_issues }}</h3>
+            </div>
+        </div>
+        <div class="col-md-3 col-sm-6">
+            <div class="card shadow-sm rounded-4 p-3 text-center">
+                <h5>Resolved</h5>
+                <h3 class="text-success">{{ resolved_issues }}</h3>
+            </div>
+        </div>
+    </div>
+
+    <!-- Charts Row -->
+    <div class="row g-3 mb-4">
+        <div class="col-md-6">
+            <div class="card shadow-sm rounded-4 p-3">
+                <h5>Status Distribution</h5>
+                <canvas id="statusChart" style="height:250px;"></canvas>
+            </div>
+        </div>
+        <div class="col-md-6">
+            <div class="card shadow-sm rounded-4 p-3">
+                <h5>Issues Over Time</h5>
+                <canvas id="timeChart" style="height:250px;"></canvas>
+            </div>
+        </div>
+    </div>
+
+    <!-- Top Reporters -->
+    <div class="row g-3 mb-4">
+        <div class="col-md-12">
+            <div class="card shadow-sm rounded-4 p-3">
+                <h5>Top Reporters</h5>
+                <canvas id="reportersChart" style="height:250px;"></canvas>
+            </div>
+        </div>
+    </div>
+
+    <!-- Recent Issues Table -->
+    <div class="card shadow-sm rounded-4 p-3">
+        <h5 class="mb-3">Recent Issues</h5>
+        <div class="table-responsive">
+            <table class="table table-striped table-hover align-middle">
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Submitted By</th>
+                        <th>Status</th>
+                        <th>Category</th>
+                        <th>Created At</th>
+                        <th>Action</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for issue in recent_issues %}
+                    <tr>
+                        <td>#{{ issue.id }}</td>
+                        <td>
+                            {% if issue.student %}
+                                {{ issue.student.username }}
+                            {% else %}
+                                Anonymous
+                            {% endif %}
+                        </td>
+                        <td>
+                            <span class="badge 
+                                {% if issue.status == 'pending' %}bg-warning text-dark
+                                {% elif issue.status == 'in_progress' %}bg-info text-dark
+                                {% elif issue.status == 'resolved' %}bg-success
+                                {% elif issue.status == 'rejected' %}bg-danger text-white
+                                {% else %}bg-secondary
+                                {% endif %}">
+                                {{ issue.status }}
+                            </span>
+                        </td>
+                        <td>
+                            {% if issue.category %}
+                                {{ issue.category.name }}
+                            {% else %}
+                                -
+                            {% endif %}
+                        </td>
+                        <td>{{ issue.created_at|date:"F d, Y H:i" }}</td>
+                        <td>
+                            <a href="{% url 'view_issue_detail' issue.id %}" class="btn btn-sm btn-primary">View</a>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+</div>
+
+<!-- Chart.js -->
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script>
+const statusCtx = document.getElementById('statusChart').getContext('2d');
+new Chart(statusCtx, {
+    type: 'doughnut',
+    data: {
+        labels: ['Pending', 'In Progress', 'Resolved', 'Rejected'],
+        datasets: [{
+            data: [{{ pending_issues }}, {{ in_progress_issues }}, {{ resolved_issues }}, {{ rejected_issues }}],
+            backgroundColor: ['#FFC107','#17A2B8','#28A745','#DC3545']
+        }]
+    },
+    options: { responsive: true, plugins: { legend: { position: 'bottom' } } }
+});
+
+const timeCtx = document.getElementById('timeChart').getContext('2d');
+new Chart(timeCtx, {
+    type: 'line',
+    data: {
+        labels: [{% for date in issues_over_time %}'{{ date.date }}',{% endfor %}],
+        datasets: [{
+            label: 'Issues',
+            data: [{% for date in issues_over_time %}{{ date.count }},{% endfor %}],
+            borderColor: '#007BFF',
+            backgroundColor: 'rgba(0,123,255,0.2)',
+            tension: 0.3
+        }]
+    },
+    options: { responsive: true }
+});
+
+const reportersCtx = document.getElementById('reportersChart').getContext('2d');
+new Chart(reportersCtx, {
+    type: 'bar',
+    data: {
+        labels: [{% for r in top_reporters %}'{{ r.username }}',{% endfor %}],
+        datasets: [{
+            label: 'Reports',
+            data: [{% for r in top_reporters %}{{ r.count }},{% endfor %}],
+            backgroundColor: '#28A745'
+        }]
+    },
+    options: { responsive: true, plugins: { legend: { display: false } } }
+});
+</script>
+
+{% endblock %}

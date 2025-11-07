@@ -1,0 +1,30 @@
+{% extends 'admin/base_site.html' %}  <!-- Uses admin styling -->
+
+{% block content %}
+<h1>Student Reports</h1>
+<table>
+    <tr>
+        <th>Title</th>
+        <th>Description</th>
+        <th>Video</th>
+        <th>Date</th>
+    </tr>
+    {% for report in reports %}
+    <tr>
+        <td>{{ report.title }}</td>
+        <td>{{ report.description }}</td>
+        <td>
+            {% if report.video %}
+                <video width="320" height="240" controls>
+                    <source src="{{ report.video.url }}" type="video/mp4">
+                    Your browser does not support the video tag.
+                </video>
+            {% else %}
+                No video
+            {% endif %}
+        </td>
+        <td>{{ report.created_at }}</td>
+    </tr>
+    {% endfor %}
+</table>
+{% endblock %}

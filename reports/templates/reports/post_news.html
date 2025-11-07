@@ -1,0 +1,113 @@
+{% extends "admin_base.html" %}
+{% load widget_tweaks %}
+
+{% block content %}
+<style>
+    body {
+        background-color: #f9f9fb;
+    }
+
+    .card {
+        border: none;
+        border-radius: 12px;
+    }
+
+    .card-header {
+        background: linear-gradient(135deg, #007bff, #0056b3);
+        color: white;
+        border-top-left-radius: 12px;
+        border-top-right-radius: 12px;
+        padding: 1.5rem;
+        font-size: 1.5rem;
+        font-weight: bold;
+        text-align: center;
+    }
+
+    .card-body {
+        background-color: #ffffff;
+        padding: 2rem;
+    }
+
+    .form-label {
+        font-weight: 600;
+    }
+
+    .btn-publish {
+        background: #28a745;
+        border: none;
+        padding: 0.75rem;
+        font-weight: bold;
+        font-size: 1rem;
+        border-radius: 8px;
+        transition: 0.3s ease;
+    }
+
+    .btn-publish:hover {
+        background-color: #218838;
+    }
+
+    @media (max-width: 576px) {
+        .card-header {
+            font-size: 1.25rem;
+            padding: 1rem;
+        }
+
+        .card-body {
+            padding: 1.25rem;
+        }
+
+        .form-control,
+        .btn-publish {
+            font-size: 0.95rem;
+            padding: 0.65rem;
+        }
+
+        .btn-publish {
+            font-size: 1rem;
+        }
+    }
+</style>
+
+<div class="container my-5">
+    <div class="row justify-content-center">
+        <div class="col-12 col-sm-11 col-md-10 col-lg-8">
+            <div class="card shadow">
+                <div class="card-header">
+                    📰 Post News
+                </div>
+                <div class="card-body">
+                    {% if messages %}
+                        {% for message in messages %}
+                            <div class="alert alert-info">{{ message }}</div>
+                        {% endfor %}
+                    {% endif %}
+
+                    <form method="POST" enctype="multipart/form-data">
+                        {% csrf_token %}
+
+                        <div class="mb-4">
+                            <label for="id_title" class="form-label">News Title</label>
+                            {% render_field form.title class="form-control form-control-lg" placeholder="Enter a catchy headline" %}
+                        </div>
+
+                        <div class="mb-4">
+                            <label for="id_content" class="form-label">News Content</label>
+                            {% render_field form.content class="form-control" rows="6" placeholder="Write your news content here..." %}
+                        </div>
+
+                        <div class="mb-4">
+                            <label for="id_image" class="form-label">Upload Image <small class="text-muted">(optional)</small></label>
+                            {% render_field form.image class="form-control" %}
+                        </div>
+
+                        <button type="submit" class="btn btn-publish w-100">
+                            📢 Publish News
+                        </button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+

@@ -1,0 +1,39 @@
+{% extends "base.html" %}
+
+{% block content %}
+<!-- 🏫 Header and tagline -->
+<h1 class="display-4 fw-bold">Campus Issues Portal</h1>
+
+<a href="{% url 'report_issue' %}" class="btn btn-warning mt-3 fw-bold">Report an Issue</a>
+<!--<a href="{% url 'choose_login' %}" class="btn btn-success fw-bold">Login</a>
+
+🧾 Steps Section -->
+<div class="container my-5">
+    <div class="row text-center g-4 justify-content-center">
+        <div class="col-md-4">
+            <div class="card shadow-sm h-100">
+                <div class="card-body">
+                    <h2 class="card-title">🔍 Spot</h2>
+                    <p class="card-text">Notice something wrong like broken equipment or safety concerns.</p>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="card shadow-sm h-100">
+                <div class="card-body">
+                    <h2 class="card-title">📸 Record</h2>
+                    <p class="card-text">Capture images or videos for better clarity.</p>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="card shadow-sm h-100">
+                <div class="card-body">
+                    <h2 class="card-title">📤 Post</h2>
+                    <p class="card-text">Submit your report directly to campus authorities.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

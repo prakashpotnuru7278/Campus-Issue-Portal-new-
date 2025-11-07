@@ -1,0 +1,52 @@
+{% extends 'portal/base.html' %}
+
+{% block title %}Login{% endblock %}
+
+{% block content %}
+<div class="min-h-screen flex items-center justify-center bg-gray-100">
+    <div class="w-full max-w-md bg-white p-8 rounded-xl shadow-lg">
+        <h2 class="text-2xl font-bold mb-6 text-center">Campus Portal Login</h2>
+
+        <!-- Toggle Buttons -->
+        <div class="flex justify-center mb-6 gap-2">
+            <button id="studentBtn" class="px-4 py-2 rounded-lg bg-blue-600 text-white font-semibold hover:bg-blue-700 focus:outline-none">Student</button>
+            <button id="adminBtn" class="px-4 py-2 rounded-lg bg-gray-200 text-gray-700 font-semibold hover:bg-gray-300 focus:outline-none">Admin</button>
+        </div>
+
+        <!-- Login Form -->
+        <form method="post" id="loginForm">
+            {% csrf_token %}
+            {{ form.as_p }}
+
+            <button type="submit" class="mt-4 w-full bg-blue-600 text-white px-4 py-2 rounded-lg font-semibold hover:bg-blue-700">Login</button>
+        </form>
+
+        <p class="mt-4 text-center text-gray-500 text-sm">
+            Don't have an account? <a href="{% url 'user_register' %}" class="text-blue-600 hover:underline">Register here</a>
+        </p>
+    </div>
+</div>
+
+<!-- JS for toggle -->
+<script>
+const studentBtn = document.getElementById('studentBtn');
+const adminBtn = document.getElementById('adminBtn');
+const form = document.getElementById('loginForm');
+
+studentBtn.addEventListener('click', () => {
+    studentBtn.classList.add('bg-blue-600', 'text-white');
+    studentBtn.classList.remove('bg-gray-200', 'text-gray-700');
+    adminBtn.classList.remove('bg-blue-600', 'text-white');
+    adminBtn.classList.add('bg-gray-200', 'text-gray-700');
+    form.action = "{% url 'user_login' %}";
+});
+
+adminBtn.addEventListener('click', () => {
+    adminBtn.classList.add('bg-blue-600', 'text-white');
+    adminBtn.classList.remove('bg-gray-200', 'text-gray-700');
+    studentBtn.classList.remove('bg-blue-600', 'text-white');
+    studentBtn.classList.add('bg-gray-200', 'text-gray-700');
+    form.action = "{% url 'admin_login' %}";
+});
+</script>
+{% endblock %}
